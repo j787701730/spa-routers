@@ -28,12 +28,13 @@
       };
     },
   };
-  function spaRouters() {
+  function SpaRouters() {
     this.routers = {}; //保存注册的所有路由
     this.beforeFun = null; //切换前
     this.afterFun = null;
   }
-  spaRouters.prototype = {
+  SpaRouters.prototype = {
+    constructor: SpaRouters,
     init: function () {
       var self = this;
       //页面加载匹配路由
@@ -45,7 +46,7 @@
         self.urlChange();
       });
       //异步引入js通过回调传递参数
-      window.SPA_RESOLVE_INIT = null;
+      // window.SPA_RESOLVE_INIT = null;
     },
     refresh: function (currentHash) {
       var self = this;
@@ -105,26 +106,65 @@
       }
     },
     //路由异步懒加载js文件
-    asyncFun: function (file, transition) {
+    asyncFun: function (files, transition) {
+      console.log(transition);
+      // var self = this;
+
+      //   console.log("开始异步下载js文件" + file);
+      //   var _body = document.getElementsByTagName("body")[0];
+      //   var scriptEle = document.createElement("script");
+      //   scriptEle.type = "text/javascript";
+      //   scriptEle.src = file;
+      //   scriptEle.async = true;
+      //   SPA_RESOLVE_INIT = null;
+      //   scriptEle.onload = function () {
+      //     console.log("下载" + file + "完成");
+      //     self.afterFun && self.afterFun(transition);
+      //     self.routers[transition.path].fn = SPA_RESOLVE_INIT;
+      //     self.routers[transition.path].fn(transition);
+      //   };
+      //   _body.appendChild(scriptEle);
+      // }
+      var $head = $("head");
+      var css = "";
+      $.each(files.css, function (i, el) {
+        css += '<link rel="stylesheet" class="css" href="' + el + '">';
+      });
+      css ? $head.append(css) : null;
       var self = this;
       if (self.routers[transition.path].fn) {
         self.afterFun && self.afterFun(transition);
         self.routers[transition.path].fn(transition);
       } else {
-        console.log("开始异步下载js文件" + file);
-        var _body = document.getElementsByTagName("body")[0];
-        var scriptEle = document.createElement("script");
-        scriptEle.type = "text/javascript";
-        scriptEle.src = file;
-        scriptEle.async = true;
-        SPA_RESOLVE_INIT = null;
-        scriptEle.onload = function () {
-          console.log("下载" + file + "完成");
+        var $body = $("body");
+        var onloadAll = files.js.length;
+        didMount = null;
+        $.each(files.js, function (i, el) {
+          if ($('.script[src="' + el + '"]').length) {
+            onloadAll -= 1;
+          } else {
+            var scriptEle = document.createElement("script");
+            scriptEle.className = "script";
+            scriptEle.src = el;
+            scriptEle.async = true;
+            scriptEle.onload = function () {
+              console.log("下载" + el + "完成");
+              onloadAll -= 1;
+              if (onloadAll === 0) {
+                self.afterFun && self.afterFun(transition);
+                self.routers[transition.path].fn = didMount;
+                self.routers[transition.path].fn(transition);
+              }
+            };
+            $body[0].appendChild(scriptEle);
+          }
+        });
+
+        if (onloadAll === 0) {
           self.afterFun && self.afterFun(transition);
-          self.routers[transition.path].fn = SPA_RESOLVE_INIT;
+          self.routers[transition.path].fn = didMount;
           self.routers[transition.path].fn(transition);
-        };
-        _body.appendChild(scriptEle);
+        }
       }
     },
     //同步操作
@@ -134,5 +174,5 @@
     },
   };
   //注册到window全局
-  window.spaRouters = new spaRouters();
+  window.spaRouters = new SpaRouters();
 })();
