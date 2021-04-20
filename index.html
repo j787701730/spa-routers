@@ -127,10 +127,12 @@
     spaRouters.beforeEach(function (transition) {
       console.log('切换之前dosomething')
       // 移除页面添加的 css 文件
-      var menuArr = Object.values(menu);
-      for (var i = 0; i < menuArr.length; i++) {
-        if (menuArr[i].path == transition.to.path) {
-          document.title = menuArr[i].title;
+      var keys = Object.keys(menu);
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (menu[key].path === transition.to.path) {
+          console.log(menu[key]);
+          document.title = menu[key].title;
           break;
         }
       }
