@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" name="Cache-Control" content="public">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+  <title>单页面</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="route.js"></script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/layer/3.3.0/layer.min.js"></script>
+  <style>
+    .form-horizontal .form-group {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="display: flex;align-items: center;justify-content: center;height: 100vh;">
+    <form class="form-horizontal" style="width: 400px;border-radius: 2px;border: 1px solid #ddd;padding: 16px;">
+      <h3>账户密码登录</h3>
+      <div class="form-group">
+        <div class="input-group" style="margin-bottom:16px;">
+          <div class="input-group-addon">账号</div>
+          <input type="text" class="form-control login-name">
+        </div>
+        <div class="input-group">
+          <div class="input-group-addon">密码</div>
+          <input type="password" class="form-control password">
+        </div>
+      </div>
+      <div class="text-center">
+        <button type="button" id="login-btn" class="btn btn-primary">登录</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    $('#login-btn').click(function () {
+      window.location.href = 'index.html#/index';
+    })
+  </script>
+</body>
+
+</html>
